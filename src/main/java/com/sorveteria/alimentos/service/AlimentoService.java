@@ -41,8 +41,4 @@ public class AlimentoService {
         alimento = alimentoRepository.save(alimento);
         return modelMapper.map(alimento, AlimentoDto.class);
     }
-
-    public void excluirAlimento(Long id) {
-        alimentoRepository.deleteById(id);
-    }
 }

@@ -45,12 +45,6 @@ public class AlimentoController {
         return ResponseEntity.ok(alimentoService.atualizaAlimento(id, dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<AlimentoDto> remover(@PathVariable @NotNull Long id) {
-        alimentoService.excluirAlimento(id);;
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/porta")
     public String retornaPorta(@Value("${local.server.port}") String porta) {
         return String.format("Requisição respondida pela instância executando na porta %s", porta);

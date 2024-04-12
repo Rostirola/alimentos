@@ -38,8 +38,8 @@ class AlimentoServiceTest {
     @Test
     void obterTodos_ShouldReturnListOfAlimentoDto() {
         // Test setup
-        Alimento alimento1 = new Alimento(1L, Tipo.SORVETE, BigDecimal.TEN);
-        Alimento alimento2 = new Alimento(2L, Tipo.MILKSHAKE, BigDecimal.valueOf(12));
+        Alimento alimento1 = new Alimento(1L, Tipo.SORVETE, BigDecimal.TEN, "Casquinha", false);
+        Alimento alimento2 = new Alimento(2L, Tipo.MILKSHAKE, BigDecimal.valueOf(12), "Milkshake", false);
         List<Alimento> alimentos = List.of(alimento1, alimento2);
         Page<Alimento> alimentosPage = new PageImpl<>(alimentos);
         Pageable pageable = Pageable.ofSize(10);
@@ -64,7 +64,7 @@ class AlimentoServiceTest {
     void obterPorId_ShouldReturnAlimentoDto() {
         // Setup
         Long alimentoId = 1L;
-        Alimento alimento = new Alimento(alimentoId, Tipo.SORVETE, BigDecimal.TEN);
+        Alimento alimento = new Alimento(alimentoId, Tipo.SORVETE, BigDecimal.TEN, "Cacão", true);
         AlimentoDto dto = new AlimentoDto();
 
         // Mocks e comportamento
@@ -75,8 +75,6 @@ class AlimentoServiceTest {
         AlimentoDto result = alimentoService.obterPorId(alimentoId);
 
         assertThat(result).isNotNull();
-        // Verifique se os campos mapeados do Alimento estão corretos
-        // ...
     }
 
     @Test
@@ -94,8 +92,8 @@ class AlimentoServiceTest {
     @Test
     void criaAlimento_ShouldCreateAndReturnAlimentoDto() {
         // Setup
-        Alimento novoAlimento = new Alimento(null, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5));
-        Alimento alimentoSalvo = new Alimento(1L, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5));
+        Alimento novoAlimento = new Alimento(null, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5), "Milkshake", false);
+        Alimento alimentoSalvo = new Alimento(1L, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5), "Milkshake", false);
         AlimentoDto dto = new AlimentoDto();
 
         // Mocks e comportamento
@@ -110,8 +108,6 @@ class AlimentoServiceTest {
         AlimentoDto result = alimentoService.criaAlimento(dto);
 
         assertThat(result).isNotNull();
-        // Verifique se os campos mapeados do Alimento estão corretos
-        // ...
     }
 
 
@@ -136,8 +132,8 @@ class AlimentoServiceTest {
     void atualizaAlimento_ShouldUpdateAndReturnAlimentoDto() {
         // Setup
         Long alimentoId = 1L;
-        Alimento alimentoAtualizado = new Alimento(alimentoId, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5));
-        Alimento alimentoSalvo = new Alimento(alimentoId, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5));
+        Alimento alimentoAtualizado = new Alimento(alimentoId, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5), "Milkshake", false);
+        Alimento alimentoSalvo = new Alimento(alimentoId, Tipo.MILKSHAKE, BigDecimal.valueOf(12.5), "Milkshake", false);
         AlimentoDto dto = new AlimentoDto();
 
         // Mocks e comportamento
@@ -148,14 +144,11 @@ class AlimentoServiceTest {
         // Crie um AlimentoDto com os dados atualizados
         dto.setTipo(alimentoAtualizado.getTipo());
         dto.setValor(alimentoAtualizado.getValor());
-        // ...
 
         // Execução e Asserções
         AlimentoDto result = alimentoService.atualizaAlimento(alimentoId, dto);
 
         assertThat(result).isNotNull();
-        // Verifique se os campos mapeados do Alimento estão corretos
-        // ...
     }
 
 
@@ -163,13 +156,12 @@ class AlimentoServiceTest {
     void atualizaAlimento_ShouldThrowExceptionForNonExistingId() {
         // Setup
         Long alimentoId = 99L;
-        Alimento alimentoAtualizado = new Alimento(alimentoId, Tipo.SORVETE, BigDecimal.valueOf(-1.5));
+        Alimento alimentoAtualizado = new Alimento(alimentoId, Tipo.SORVETE, BigDecimal.valueOf(-1.5), "Sorvete", false);
         AlimentoDto alimentoDto = new AlimentoDto(); // Create an empty DTO
 
         // Map the updated values (if needed)
         alimentoDto.setTipo(alimentoAtualizado.getTipo());
         alimentoDto.setValor(alimentoAtualizado.getValor());
-        // ... and any other fields
 
         // Mocking behavior
         when(alimentoRepository.existsById(alimentoId)).thenReturn(false);
@@ -177,38 +169,4 @@ class AlimentoServiceTest {
         // Execution and Assertions
         assertThrows(EntityNotFoundException.class, () -> alimentoService.atualizaAlimento(alimentoId, alimentoDto));
     }
-
-    @Test
-    void excluirAlimento_ShouldDeleteExistingAlimento() {
-        // Setup
-        Long alimentoId = 1L;
-
-        // Mocks e comportamento
-        when(alimentoRepository.existsById(alimentoId)).thenReturn(true);
-        doNothing().when(alimentoRepository).deleteById(alimentoId);
-
-        // Execução
-        alimentoService.excluirAlimento(alimentoId);
-
-        // Verificação
-        verify(alimentoRepository).existsById(alimentoId);
-        verify(alimentoRepository).deleteById(alimentoId);
-    }
-
-    @Test
-    void excluirAlimento_ShouldNotDeleteNonExistingAlimento() {
-        // Setup
-        Long alimentoId = 99L;
-
-        // Mocks e comportamento
-        when(alimentoRepository.existsById(alimentoId)).thenReturn(false);
-
-        // Execução e Asserções
-        assertThrows(EntityNotFoundException.class, () -> alimentoService.excluirAlimento(alimentoId));
-
-        // Verificação
-        verify(alimentoRepository).existsById(alimentoId);
-        verify(alimentoRepository, never()).deleteById(anyLong());
-    }
-
 }

@@ -17,4 +17,7 @@ public class AlimentoDto {
     private Long id;
     private Tipo tipo;
     private BigDecimal valor;
+    private String nome;
+    private boolean status;
+
 }

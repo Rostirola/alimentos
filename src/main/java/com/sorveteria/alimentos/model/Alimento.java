@@ -27,4 +27,10 @@ public class Alimento {
 
     @NotNull
     private BigDecimal valor;
+
+    @NotNull
+    private String nome;
+
+    @NotNull
+    private boolean status;
 }
